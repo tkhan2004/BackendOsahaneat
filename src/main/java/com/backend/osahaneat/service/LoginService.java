@@ -8,6 +8,7 @@ import com.backend.osahaneat.dto.UsersDTO;
 import com.backend.osahaneat.payload.Request.SignupRequest;
 import com.backend.osahaneat.service.imp.LoginServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,6 +18,9 @@ import java.util.List;
 public class LoginService implements LoginServiceImp {
     @Autowired
     UserReponsitory userReponsitory;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @Override
     public List<UsersDTO> getAllUsers() {
@@ -36,8 +40,9 @@ public class LoginService implements LoginServiceImp {
 
     @Override
     public Boolean checkLogin(String username, String password) {
-        List<Users> users= userReponsitory.findByUsernameAndPassword(username,password);
-        return users.size()>0?true:false;
+        Users users= userReponsitory.findByUsername(username);
+        return passwordEncoder.matches(password, users.getPassword());
+
     }
 
     @Override

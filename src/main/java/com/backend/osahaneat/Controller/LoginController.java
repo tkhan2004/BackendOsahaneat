@@ -4,27 +4,45 @@ import com.backend.osahaneat.payload.Request.SignupRequest;
 import com.backend.osahaneat.payload.ResponseData;
 import com.backend.osahaneat.service.LoginService;
 import com.backend.osahaneat.service.imp.LoginServiceImp;
+import com.backend.osahaneat.utill.JwtUtillHelper;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Encoders;
+import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-@CrossOrigin("*")
+
+import javax.crypto.SecretKey;
+
 @RestController
 @RequestMapping("/login")
 public class LoginController {
     @Autowired
     LoginServiceImp loginServiceImp; // tương tự như LoginServiceImp loginServiceImp = new LoginService(); vì LgSv kế thừa LgSvImp
     // api được gọi đầu tiên ở đây
+
+    @Autowired
+    JwtUtillHelper jwtUtillHelper;
+
     @PostMapping("/signin")
     public ResponseEntity<?> signin(@RequestParam String username, String password){
+
         ResponseData responseData = new ResponseData();
+
+//        SecretKey key = Jwts.SIG.HS256.key().build(); //or HS384.key() or HS512.key()
+//        String secretString = Encoders.BASE64.encode(key.getEncoded());
+//        System.out.println(secretString);
 
         //kích họạt SvImp
         if(loginServiceImp.checkLogin(username, password)){
-            responseData.setData(true);
+            String token = jwtUtillHelper.generateToken(username);
+            responseData.setData(token);
         }
         else {
-            responseData.setData(false);
+            responseData.setData("");
+            responseData.setSuccess(false);
         }
         return new ResponseEntity<>(responseData, HttpStatus.OK);
     }@PostMapping("/signup")

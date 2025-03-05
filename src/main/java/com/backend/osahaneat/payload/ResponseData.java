@@ -2,11 +2,20 @@ package com.backend.osahaneat.payload;
 
 public class ResponseData {
     private int status =200;
+    private boolean isSuccess = true;
     private String desc;
     private Object data;
 
     public int getStatus() {
         return status;
+    }
+
+    public boolean isSuccess() {
+        return isSuccess;
+    }
+
+    public void setSuccess(boolean success) {
+        isSuccess = success;
     }
 
     public void setStatus(int status) {
