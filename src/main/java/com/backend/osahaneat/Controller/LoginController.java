@@ -2,19 +2,12 @@ package com.backend.osahaneat.Controller;
 
 import com.backend.osahaneat.payload.Request.SignupRequest;
 import com.backend.osahaneat.payload.ResponseData;
-import com.backend.osahaneat.service.LoginService;
 import com.backend.osahaneat.service.imp.LoginServiceImp;
 import com.backend.osahaneat.utill.JwtUtillHelper;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Encoders;
-import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.crypto.SecretKey;
 
 @RestController
 @RequestMapping("/login")

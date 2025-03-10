@@ -8,9 +8,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.net.http.HttpRequest;
 
@@ -23,6 +25,9 @@ public class CustomSecurity {
     @Autowired
     CustomUserDetailService customUserDetailService;
 
+    @Autowired
+    CustomJwtFillter customJwtFillter;
+
     @Bean
     public AuthenticationManager authenticationManager( HttpSecurity httpSecurity) throws Exception {
         AuthenticationManagerBuilder authenticationManagerBuilder = httpSecurity.getSharedObject(AuthenticationManagerBuilder.class);
@@ -34,13 +39,14 @@ public class CustomSecurity {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .cors(cors -> cors.disable())  // Tắt CORS (nếu cần bật lại, dùng corsConfigurer)
-                .csrf(csrf -> csrf.disable())  // Tắt CSRF
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login/**").permitAll()  // Cho phép truy cập /login/**
+                        .requestMatchers("/login/**","/restaurant/files/**").permitAll()  // Cho phép truy cập /login/**
                         .anyRequest().authenticated()  // Còn lại cần xác thực
-                )
-                .httpBasic(withDefaults());  // Dùng Basic Authentication
-
+                );
+        http
+                .addFilterBefore(customJwtFillter, UsernamePasswordAuthenticationFilter.class );
         return http.build();
     }
 
