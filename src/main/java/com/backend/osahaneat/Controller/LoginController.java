@@ -5,10 +5,12 @@ import com.backend.osahaneat.payload.ResponseData;
 import com.backend.osahaneat.service.imp.LoginServiceImp;
 import com.backend.osahaneat.utill.JwtUtillHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/login")
 public class LoginController {

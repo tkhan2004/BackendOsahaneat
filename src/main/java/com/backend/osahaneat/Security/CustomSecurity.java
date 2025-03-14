@@ -34,19 +34,19 @@ public class CustomSecurity {
         authenticationManagerBuilder.userDetailsService(customUserDetailService);
         return authenticationManagerBuilder.build();
     }
-
+    
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(cors -> cors.disable())  // Tắt CORS (nếu cần bật lại, dùng corsConfigurer)
+                .cors(withDefaults()) // ✅ Bật CORS
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login/**","/restaurant/files/**").permitAll()  // Cho phép truy cập /login/**
-                        .anyRequest().authenticated()  // Còn lại cần xác thực
+                        .requestMatchers("/login/**","/restaurant/files/**").permitAll()
+                        .anyRequest().authenticated()
                 );
-        http
-                .addFilterBefore(customJwtFillter, UsernamePasswordAuthenticationFilter.class );
+
+        http.addFilterBefore(customJwtFillter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

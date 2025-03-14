@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/restaurant")
 public class RestaurantController {
@@ -42,6 +43,14 @@ public class RestaurantController {
         Resource resource = fileServiceImp.loadFile(filename);
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"").body(resource);
+    }
+
+    @GetMapping()
+    public ResponseEntity<?> getRestaurant() {
+
+        ResponseData responseData = new ResponseData();
+        responseData.setData(restaurantServiceImp.getRestaurants());
+        return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
 
 
